@@ -5,7 +5,6 @@
 #
 from Node import Node
 from string import ascii_lowercase
-from read_dictionary import read_dictionary
 
 valid_words = None
 
@@ -14,16 +13,14 @@ class WordGameNode(Node):
       # Ensure lowercase letters (no digits or special chars)
       for letter in name:
          assert letter in ascii_lowercase
-
-      global valid_words
-      if valid_words == None or len(valid_words) != len(name):
-         # We only need to examine words which have the same length as our word (self.name)
-         valid_words = read_dictionary("/etc/dictionaries-common/words", len(name))
       self.name = name
       self.parent = parent
 
    def __str__(self):
       return self.name
+
+   def get_parent(self):
+      return self.parent
 
    def get_children(self):
       child_words = []
@@ -42,3 +39,17 @@ class WordGameNode(Node):
          return [self]
       else:
          return [self] + self.get_parent().get_path()
+
+
+def check_valid_words(word_to_check):
+   global valid_words
+   return word_to_check in valid_words
+
+def read_dictionary(path, word_length):
+   global valid_words
+   if valid_words == None or len(valid_words[0]) != word_length:
+      valid_words = []
+      with open(path, "r") as file:
+         for line in file.readlines():
+            if len(line.strip()) == word_length:
+               valid_words.append(line.strip())
