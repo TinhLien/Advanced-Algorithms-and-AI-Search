@@ -16,6 +16,8 @@ class WordGameNode(Node):
             assert letter in ascii_lowercase
         self.name = name
         self.parent = parent
+        self.score = None
+        self.depth = len(self.get_path())
 
     def __str__(self):
         return self.name
@@ -40,6 +42,13 @@ class WordGameNode(Node):
             return [self]
         else:
             return [self] + self.get_parent().get_path()
+
+    def heuristic(self, goal):
+        score = 0
+        for idx, letter in enumerate(self.name):
+            if letter != goal.name[idx]:
+                score += 1
+        return score
 
 
 def check_valid_words(word_to_check):
